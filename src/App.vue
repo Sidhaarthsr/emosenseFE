@@ -1,82 +1,84 @@
 <template>
   <div id="app">
-    <CardComponent
-      header="First Card"
-      body="Once upon a time, there was a little mouse named Jerry who lived in a cozy burrow beneath the old oak tree. He loved exploring the forest and making friends with other creatures."
-      footer="The end of the first card"
-      :color="originalColor"
-    ></CardComponent>
-    <CardComponent
-      header="Second Card"
-      body="In a distant kingdom, there was a brave knight named Sir Arthur. He embarked on a quest to rescue the princess from the clutches of an evil sorcerer who dwelled in the dark castle atop the hill."
-      footer="The end of the second card"
-      color="yellow"
-    ></CardComponent>
-    <CardComponent
-      header="Third Card"
-      body="Deep in the heart of the Amazon rainforest, a group of explorers stumbled upon a hidden temple filled with ancient treasures and mysterious artifacts."
-      footer="The end of the third card"
-      color="blue"
-    ></CardComponent>
-    <CardComponent
-      header="Fourth Card"
-      body="On a sunny morning, a young boy named Timmy found a mysterious map in his attic. It led him on an adventure across the seven seas in search of buried treasure."
-      footer="The end of the fourth card"
-      color="purple"
-    ></CardComponent>
-    <CardComponent
-      header="Fifth Card"
-      body="In the bustling city of New York, a struggling artist named Emily stumbled upon an enchanted paintbrush that brought her vivid imagination to life."
-      footer="The end of the fifth card"
-      color="orange"
-    ></CardComponent>
-    <CardComponent
-      header="Sixth Card"
-      body="In the quaint village of Willowbrook, a mischievous gnome named Grumbletoes caused chaos with his pranks until he learned the true meaning of friendship."
-      footer="The end of the sixth card"
-      color="green"
-    ></CardComponent>
-    <CardComponent
-      header="Seventh Card"
-      body="In a land far, far away, a young dragon named Sparky struggled to control his fiery breath until he discovered the power of meditation."
-      footer="The end of the seventh card"
-      color="brown"
-    ></CardComponent>
-    <CardComponent
-      header="Eighth Card"
-      body="Amidst the snowy peaks of the Himalayas, a yeti named Yuki embarked on a journey to find his long-lost family and unlock the secrets of his past."
-      footer="The end of the eighth card"
-      color="cyan"
-    ></CardComponent>
-    <CardComponent
-      header="Ninth Card"
-      body="In the magical kingdom of Avalon, a humble wizard named Merlin mentored a young sorceress named Morgana, unaware of her dark destiny."
-      footer="The end of the ninth card"
-      color="maroon"
-    ></CardComponent>
+    <HomePage v-if="showHomePage"></HomePage>
+    <div v-else>
+      <div class="card-row">
+        <CardComponent
+          v-for="(card, index) in cardData.slice(0, 3)"
+          :key="index"
+          :header="card.header"
+          :body="card.body"
+          :footer="card.footer"
+          :color="card.color"
+          :fontStyle="card.fontStyle"
+          class="card"
+        ></CardComponent>
+      </div>
+      <div class="card-row">
+        <CardComponent
+          v-for="(card, index) in cardData.slice(3, 6)"
+          :key="index"
+          :header="card.header"
+          :body="card.body"
+          :footer="card.footer"
+          :color="card.color"
+          :fontStyle="card.fontStyle"
+          class="card"
+        ></CardComponent>
+      </div>
+    </div>
+    <button @click="toggleView">{{ showHomePage ? 'Next' : 'Back to Home' }}</button>
   </div>
 </template>
 
-
-
 <script>
-import CardComponent from './components/CardComponent.vue'
+import CardComponent from './components/CardComponent.vue';
+import HomePage from './components/HomePage.vue';
+import 'bootstrap/dist/css/bootstrap.css';
+
 export default {
-  /* eslint-disable */
   components: {
-    CardComponent
+    CardComponent,
+    HomePage,
   },
   name: 'App',
   data() {
     return {
-      originalColor :'#00FF00',
-      width : 320,   // We will scale the photo width to this
-      height : 0,   // This will be computed based on the input stream
-      intervalId: null // New property to hold the interval ID
-
+      originalColor: '#FF0000',
+      showHomePage: true,
+      colors: {
+        card1: '#ff0000',  // Red
+        card2: '#ffff00',  // Yellow
+        card3: '#0000ff',  // Blue
+        card4: '#008000',  // Green
+        card5: '#a52a2a',  // Brown
+        card6: '#800080'   // Purple
+    },
+      cardData: [],
     }
   },
-  methods: {  
+  computed: {
+    cardRows() {
+      const rows = [];
+      for (let i = 0; i < this.cardData.length; i += 3) {
+        rows.push(this.cardData.slice(i, i + 3));
+      }
+      return rows;
+    }
+  },
+  methods: {
+    toggleView() {
+
+      this.showHomePage = !this.showHomePage;
+      if(this.showHomePage===false)
+      {
+        this.startCamera();
+      }
+      else
+      {
+        this.stopCamera();
+      }
+    },
     get:function(){
     this.$http.get('https://jsonplaceholder.typicode.com/todos/1')
     .then(response => {
@@ -210,10 +212,15 @@ calculateLuminance(color) {
             // Start capturing images at intervals
             this.intervalId = setInterval(() => {
               this.captureImage(videoElement);
-              const originalRgb = this.hexToRgb(this.originalColor); // Convert hexadecimal to RGB array
-              this.originalColor = this.adjustColorByLuminance(originalRgb, -2); // Adjust color by luminance
+             
+              this.cardData.forEach((card, index) => {
+                const originalRgb = this.hexToRgb(card.color);
+                console.log("Original Color",card.color);
 
-             console.log(this.originalColor);
+                const adjustedColor = this.adjustColorByLuminance(originalRgb, -2);
+                console.log("Adjusted Color",adjustedColor)
+                this.$set(this.cardData, index, { ...card, color: adjustedColor });
+              });
             }, 10000); // Capture every 10 seconds
           };
         })
@@ -228,7 +235,45 @@ calculateLuminance(color) {
   },
   mounted() {
    this.get();
-   this.startCamera();
+   this.cardData = [
+      {
+        header: "First Card",
+        body: "Once upon a time, there was a little mouse named Jerry who lived in a cozy burrow beneath the old oak tree. He loved exploring the forest and making friends with other creatures.",
+        footer: "The end of the first card",
+        color: this.originalColor,
+      },
+      {
+        header: "Second Card",
+        body: "In a distant kingdom, there was a brave knight named Sir Arthur. He embarked on a quest to rescue the princess from the clutches of an evil sorcerer who dwelled in the dark castle atop the hill.",
+        footer: "The end of the second card",
+        color: this.colors.card2,
+      },
+      {
+        header: "Third Card",
+        body: "Deep in the heart of the Amazon rainforest, a group of explorers stumbled upon a hidden temple filled with ancient treasures and mysterious artifacts.",
+        footer: "The end of the third card",
+        color: this.colors.card3,
+      },
+      {
+        header: "Fourth Card",
+        body: "On a sunny morning, a young boy named Timmy found a mysterious map in his attic. It led him on an adventure across the seven seas in search of buried treasure.",
+        footer: "The end of the fourth card",
+        color: this.colors.card4,
+      },
+      {
+        header: "Fifth Card",
+        body: "In the bustling city of New York, a struggling artist named Emily stumbled upon an enchanted paintbrush that brought her vivid imagination to life.",
+        footer: "The end of the fifth card",
+        color: this.colors.card5,
+      },
+      {
+        header: "Sixth Card",
+        body: "In the quaint village of Willowbrook, a mischievous gnome named Grumbletoes caused chaos with his pranks until he learned the true meaning of friendship.",
+        footer: "The end of the sixth card",
+        color: this.colors.card6,
+      }
+    ];
+
   }
 }
 </script>
@@ -251,21 +296,22 @@ body{
 }
 #app {
   display: flex;
-  flex-wrap: wrap; /* Allow cards to wrap to the next row */
-  justify-content: space-between; /* Align the cards to the left and right sides */
-  align-items: center; /* Center the cards vertically */
-  height: 100vh; /* Set the height of the container to 100% of the viewport height */
-  padding: 0 20px; /* Add space on the left and right sides */
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
 .card {
-  width: calc(33.33% - 20px); /* Adjust the width as per your requirement */
-  margin-bottom: 20px;
-  box-sizing: border-box; /* Ensure padding and border are included in the width */
-  border-radius: 15px; /* Add border-radius for curved edges */
-  overflow: hidden; /* Hide overflowing content */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+  width: calc(33.33% - 10px);
+  box-sizing: border-box;
 }
+
 .textbox{
   padding: 20px;
   width: calc(100% - 40px);

@@ -1,12 +1,24 @@
-## FrontEnd Repository for Emosense, an AI-powered Dynamic UI to reduce eye strain.
+# dynamic_styling
 
+## Project setup
 ```
-Step 1: Ensure node is installed on your system. 
-Step 2: If Vue js 2 is not installed,Execute "npm install vue@2" to install it
-Step 3: Once successfully installed, Open codebase in visual studio code
-Step 4: Open terminal in Visual Studio code, and execute "npm install". This will install all the required modules
-Step 5: Execute "npm run serve" to run the code
-
+npm install
 ```
 
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
 
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

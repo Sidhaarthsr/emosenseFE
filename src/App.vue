@@ -1,5 +1,13 @@
 <template>
   <div id="app">
+    <header class="header">
+      <div class="logo-container">
+        <img src="@/assets/logo.jpeg" alt="Logo" class="logo"> <!-- Add your logo here -->
+      </div>
+      <div class="header-content">
+        <h1 class="header-title">Adaptive UI</h1>
+      </div>
+    </header>
     <HomePage v-if="showHomePage"></HomePage>
     <div v-else>
       <div class="card-row">
@@ -27,10 +35,12 @@
         ></CardComponent>
       </div>
     </div>
-    <button @click="toggleView">{{ showHomePage ? 'Next' : 'Back to Home' }}</button>
+    <button @click="toggleView" class="toggle-button">{{ showHomePage ? 'Next' : 'Back to Home' }}</button>
+    <footer class="footer">
+      <p class="footer-text">© 2024 Adaptive UI. All rights reserved.</p>
+    </footer>
   </div>
 </template>
-
 <script>
 import CardComponent from './components/CardComponent.vue';
 import HomePage from './components/HomePage.vue';
@@ -279,27 +289,23 @@ calculateLuminance(color) {
 </script>
 
 <style lang="scss">
-.camera {
-  position: relative;
-}
-.camera button {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-body{
+
+
+body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma;
   font-size: 1rem;
+  background-color: #f5f5f5; /* Set a light background color */
 }
+
 #app {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
 }
+
+
 
 .card-row {
   display: flex;
@@ -310,22 +316,90 @@ body{
 .card {
   width: calc(33.33% - 10px);
   box-sizing: border-box;
+  background-color: #fff; /* White card background */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  padding: 20px;
+  transition: transform 0.3s ease; /* Smooth transition on hover */
 }
 
-.textbox{
-  padding: 20px;
-  width: calc(100% - 40px);
-  max-width: 480px;
-  border : 1px solid #ccc;
-  font-size: 1.2rem;
-  color: #333;
-  background-color: #efefef;
+.card:hover {
+  transform: translateY(-5px); /* Lift card on hover */
+}
 
-  &.dark{
-    color: #efefef;
-    background-color: #333;
-    font-size: 1rem;
-  }
+.toggle-button {
+  background-color: #4287f5; /* Blue button color */
+  color: #fff; /* White text color */
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.toggle-button:hover {
+  background-color: #3366cc; /* Darker blue on hover */
+}
+
+
+.header {
+  background: linear-gradient(135deg, #4287f5, #ff9e15); /* Gradient background */
+  color: #fff; /* White text color */
+  padding: 10px; /* Reduced padding */
+  display: flex;
+  justify-content: space-between; /* Distribute items evenly */
+  align-items: center; /* Center items vertically */
+  width: 100%; /* Ensure header spans full width */
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.5rem; /* Reduced font size */
+  font-weight: bold; /* Bold font weight */
+  letter-spacing: 1px; /* Reduced letter spacing */
+  text-align: center; /* Center title */
+  flex-grow: 1; /* Allow title to grow and occupy remaining space */
+}
+
+
+.header-content {
+  display: flex;
+  align-items: center;
+  flex-grow: 1; /* Allow it to take up remaining space */
+  justify-content: center; /* Center horizontally */
+}
+
+.logo-container {
+  display: flex; /* Make the container a flexbox */
+  align-items: center; /* Center items vertically */
+}
+
+.logo {
+  width: 100px; /* Adjust the width of the logo */
+  height: auto; /* Maintain aspect ratio */
+}
+.footer {
+  color: #fff; /* White text color */
+  padding: 10px; /* Reduced padding */
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  width: 100%; /* Ensure footer spans full width */
+}
+
+.footer-text {
+  margin: 0;
+  color: black;
+  font-size: 0.8rem; /* Reduced font size */
+  text-align: right; /* Center text */
+}
+.header {
+  margin-bottom: 0; /* Remove bottom margin */
+}
+
+.footer {
+  margin-top: 0; /* Remove top margin */
 }
 
 
